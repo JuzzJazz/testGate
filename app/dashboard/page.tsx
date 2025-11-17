@@ -42,18 +42,98 @@ export default function Dashboard() {
   ]
 
   const stats = [
-    { label: 'Total Orders', value: '24', icon: ShoppingCart, color: 'bg-blue-500' },
-    { label: 'Pending', value: '8', icon: Clock, color: 'bg-yellow-500' },
-    { label: 'Completed', value: '16', icon: CheckCircle, color: 'bg-green-500' },
-    { label: 'This Month', value: '12', icon: TrendingUp, color: 'bg-purple-500' },
+    { label: 'Total Penjualan Bulan Ini', value: 'Rp 2.5M', icon: TrendingUp, color: 'bg-green-500' },
+    { label: 'Unit Terjual Bulan Ini', value: '18', icon: CheckCircle, color: 'bg-blue-500' },
+    { label: 'Order Baru', value: '12', icon: ShoppingCart, color: 'bg-yellow-500' },
+    { label: 'Proses Pencairan Adira', value: '6', icon: Clock, color: 'bg-purple-500' },
   ]
 
-  const recentActivities = [
-    { title: 'New order created', time: '2 hours ago', type: 'order' },
-    { title: 'Profile updated', time: '5 hours ago', type: 'profile' },
-    { title: 'Document uploaded', time: '1 day ago', type: 'document' },
-    { title: 'Payment processed', time: '2 days ago', type: 'payment' },
+  // Data penjualan per bulan (contoh data)
+  const monthlySales = [
+    { bulan: 'Januari', amount: 3200000, count: 22 },
+    { bulan: 'Februari', amount: 2800000, count: 19 },
+    { bulan: 'Maret', amount: 3500000, count: 24 },
+    { bulan: 'April', amount: 2900000, count: 20 },
+    { bulan: 'Mei', amount: 3100000, count: 21 },
+    { bulan: 'Juni', amount: 2700000, count: 18 },
+    { bulan: 'Juli', amount: 3300000, count: 23 },
+    { bulan: 'Agustus', amount: 2950000, count: 20 },
+    { bulan: 'September', amount: 3400000, count: 25 },
+    { bulan: 'Oktober', amount: 3150000, count: 22 },
+    { bulan: 'November', amount: 2500000, count: 18 },
   ]
+
+  // Data order list
+  const orderList = [
+    { 
+      id: 'ORD-001', 
+      customer: 'Budi Santoso', 
+      kendaraan: 'Honda Beat 2024', 
+      type: 'Motor Baru',
+      harga: 18500000, 
+      status: 'Order Baru',
+      tanggal: '15 Nov 2024',
+      statusColor: 'bg-yellow-100 text-yellow-800'
+    },
+    { 
+      id: 'ORD-002', 
+      customer: 'Siti Nurhaliza', 
+      kendaraan: 'Toyota Avanza 2024', 
+      type: 'Mobil Baru',
+      harga: 245000000, 
+      status: 'Pencairan Adira',
+      tanggal: '14 Nov 2024',
+      statusColor: 'bg-purple-100 text-purple-800'
+    },
+    { 
+      id: 'ORD-003', 
+      customer: 'Ahmad Yani', 
+      kendaraan: 'Yamaha NMAX 2023', 
+      type: 'Motor Bekas',
+      harga: 24500000, 
+      status: 'Order Baru',
+      tanggal: '14 Nov 2024',
+      statusColor: 'bg-yellow-100 text-yellow-800'
+    },
+    { 
+      id: 'ORD-004', 
+      customer: 'Dewi Lestari', 
+      kendaraan: 'Honda Jazz 2022', 
+      type: 'Mobil Bekas',
+      harga: 235000000, 
+      status: 'Pencairan Adira',
+      tanggal: '13 Nov 2024',
+      statusColor: 'bg-purple-100 text-purple-800'
+    },
+    { 
+      id: 'ORD-005', 
+      customer: 'Rudi Hermawan', 
+      kendaraan: 'Suzuki Satria 2024', 
+      type: 'Motor Baru',
+      harga: 22000000, 
+      status: 'Order Baru',
+      tanggal: '13 Nov 2024',
+      statusColor: 'bg-yellow-100 text-yellow-800'
+    },
+    { 
+      id: 'ORD-006', 
+      customer: 'Maya Sari', 
+      kendaraan: 'Daihatsu Xenia 2024', 
+      type: 'Mobil Baru',
+      harga: 215000000, 
+      status: 'Pencairan Adira',
+      tanggal: '12 Nov 2024',
+      statusColor: 'bg-purple-100 text-purple-800'
+    },
+  ]
+
+  const formatRupiah = (amount: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0
+    }).format(amount)
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -177,16 +257,16 @@ export default function Dashboard() {
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">
                   <h2 className="text-lg sm:text-2xl lg:text-3xl font-bold text-white mb-1 sm:mb-2 break-words">
-                    RONNY SUHERMAWAN, Selamat Datang di Ad1Gate
+                    Selamat Datang di Dashboard Dealer Kendaraan
                   </h2>
                   <p className="text-xs sm:text-sm text-green-100 flex items-center gap-1 sm:gap-2">
                     <Clock className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                    <span className="truncate">Login terakhir Anda pada: 07-Nov-2025, 14:09:19</span>
+                    <span className="truncate">Pembiayaan bekerja sama dengan PT Adira Dinamika Multi Finance Tbk.</span>
                   </p>
                 </div>
                 <div className="hidden lg:block ml-4 flex-shrink-0">
                   <div className="w-24 h-24 xl:w-32 xl:h-32 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                    <User className="h-12 w-12 xl:h-16 xl:w-16 text-white" />
+                    <ShoppingCart className="h-12 w-12 xl:h-16 xl:w-16 text-white" />
                   </div>
                 </div>
               </div>
@@ -216,58 +296,125 @@ export default function Dashboard() {
             </div>
 
             {/* Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-              {/* Recent Activities */}
-              <div className="lg:col-span-2 bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6">
+              {/* Tabel Penjualan Bulanan */}
+              <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900">Recent Activities</h3>
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900">Penjualan Per Bulan (2024)</h3>
                   <button className="text-green-600 hover:text-green-700 text-xs sm:text-sm font-medium">
-                    View All
+                    Download Report
                   </button>
                 </div>
-                <div className="space-y-3 sm:space-y-4">
-                  {recentActivities.map((activity, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-gray-900 text-sm sm:text-base truncate">{activity.title}</p>
-                        <p className="text-xs sm:text-sm text-gray-500">{activity.time}</p>
-                      </div>
-                    </div>
-                  ))}
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bulan</th>
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Penjualan</th>
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Unit</th>
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Rata-rata/Unit</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {monthlySales.map((sale, index) => (
+                        <tr key={index} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 text-sm font-medium text-gray-900">{sale.bulan}</td>
+                          <td className="px-4 py-3 text-sm text-right text-gray-900 font-semibold">{formatRupiah(sale.amount)}</td>
+                          <td className="px-4 py-3 text-sm text-right text-gray-600">{sale.count} unit</td>
+                          <td className="px-4 py-3 text-sm text-right text-gray-600">{formatRupiah(sale.amount / sale.count)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot className="bg-gray-100">
+                      <tr className="font-bold">
+                        <td className="px-4 py-3 text-sm text-gray-900">Total YTD</td>
+                        <td className="px-4 py-3 text-sm text-right text-green-600">
+                          {formatRupiah(monthlySales.reduce((sum, sale) => sum + sale.amount, 0))}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-right text-gray-900">
+                          {monthlySales.reduce((sum, sale) => sum + sale.count, 0)} unit
+                        </td>
+                        <td className="px-4 py-3 text-sm text-right text-gray-600">
+                          {formatRupiah(
+                            monthlySales.reduce((sum, sale) => sum + sale.amount, 0) / 
+                            monthlySales.reduce((sum, sale) => sum + sale.count, 0)
+                          )}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
                 </div>
               </div>
 
-              {/* Quick Actions */}
+              {/* Tabel Order List */}
               <div className="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6">
-                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">Quick Actions</h3>
-                <div className="space-y-2.5 sm:space-y-3">
-                  <button className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-2.5 sm:py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 text-sm sm:text-base">
-                    Create New Order
-                  </button>
-                  <button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2.5 sm:py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 text-sm sm:text-base">
-                    View Reports
-                  </button>
-                  <button className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-2.5 sm:py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 text-sm sm:text-base">
-                    Upload Document
-                  </button>
-                  <button className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-2.5 sm:py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 text-sm sm:text-base">
-                    Contact Support
-                  </button>
-                </div>
-
-                {/* System Status */}
-                <div className="mt-4 sm:mt-6 p-3 sm:p-4 bg-green-50 rounded-lg border border-green-200">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <p className="font-semibold text-green-900 text-sm sm:text-base">System Status</p>
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900">Daftar Order Terbaru</h3>
+                  <div className="flex gap-2">
+                    <button className="px-3 py-1.5 text-xs sm:text-sm bg-yellow-100 text-yellow-800 rounded-lg font-medium hover:bg-yellow-200">
+                      Order Baru ({orderList.filter(o => o.status === 'Order Baru').length})
+                    </button>
+                    <button className="px-3 py-1.5 text-xs sm:text-sm bg-purple-100 text-purple-800 rounded-lg font-medium hover:bg-purple-200">
+                      Pencairan ({orderList.filter(o => o.status === 'Pencairan Adira').length})
+                    </button>
                   </div>
-                  <p className="text-xs sm:text-sm text-green-700">All systems operational</p>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kendaraan</th>
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipe</th>
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Harga</th>
+                        <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {orderList.map((order, index) => (
+                        <tr key={index} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 text-sm font-medium text-blue-600">{order.id}</td>
+                          <td className="px-4 py-3 text-sm text-gray-600">{order.tanggal}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{order.customer}</td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{order.kendaraan}</td>
+                          <td className="px-4 py-3 text-sm text-gray-600">
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              order.type.includes('Motor') ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'
+                            }`}>
+                              {order.type}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-right font-semibold text-gray-900">{formatRupiah(order.harga)}</td>
+                          <td className="px-4 py-3 text-sm text-center">
+                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.statusColor}`}>
+                              {order.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Quick Summary Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg">
+                  <h4 className="text-sm font-medium mb-2 opacity-90">Motor Baru Terjual</h4>
+                  <p className="text-3xl font-bold mb-1">8 Unit</p>
+                  <p className="text-sm opacity-75">November 2024</p>
+                </div>
+                <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg">
+                  <h4 className="text-sm font-medium mb-2 opacity-90">Mobil Baru Terjual</h4>
+                  <p className="text-3xl font-bold mb-1">6 Unit</p>
+                  <p className="text-sm opacity-75">November 2024</p>
+                </div>
+                <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg">
+                  <h4 className="text-sm font-medium mb-2 opacity-90">Kendaraan Bekas Terjual</h4>
+                  <p className="text-3xl font-bold mb-1">4 Unit</p>
+                  <p className="text-sm opacity-75">November 2024</p>
                 </div>
               </div>
             </div>
@@ -279,10 +426,11 @@ export default function Dashboard() {
                   <Info className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">Important Notice</h4>
+                  <h4 className="font-bold text-gray-900 mb-1 sm:mb-2 text-sm sm:text-base">Informasi Penting</h4>
                   <p className="text-gray-700 text-xs sm:text-sm">
-                    Welcome to the enhanced Ad1Gate portal. Please ensure all your information is up to date. 
-                    For any assistance, please contact our support team.
+                    Sistem pembiayaan terintegrasi dengan PT Adira Dinamika Multi Finance Tbk. 
+                    Pastikan semua dokumen order sudah lengkap untuk proses pencairan yang lebih cepat. 
+                    Untuk bantuan, hubungi tim support kami.
                   </p>
                 </div>
               </div>

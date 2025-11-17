@@ -19,7 +19,8 @@ import {
   Search,
   Calendar,
   AlertCircle,
-  ChevronRight
+  ChevronRight,
+  Filter
 } from 'lucide-react'
 
 export default function IBookingPage() {
@@ -35,6 +36,13 @@ export default function IBookingPage() {
   const [selectedEndYear, setSelectedEndYear] = useState('2025')
   const [selectedMonthOnly, setSelectedMonthOnly] = useState('October')
   const [searchTerm, setSearchTerm] = useState('')
+  const [showFilterModal, setShowFilterModal] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+
+  // Date picker states
+  const [startDate, setStartDate] = useState('2025-10-01')
+  const [endDate, setEndDate] = useState('2025-10-31')
+  const [isDateRange, setIsDateRange] = useState(true)
 
   const menuItems = [
     { icon: Home, label: 'Home', href: '/dashboard' },
@@ -186,164 +194,34 @@ export default function IBookingPage() {
             <div className="bg-white rounded-xl shadow-lg overflow-hidden">
               <div className="p-4 sm:p-6 lg:p-8">
                 <div className="space-y-6">
-                  {/* Cabang Search */}
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">
-                      Cabang
-                    </label>
-                    <div className="relative">
+                  {/* Search Bar with Filter Button */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex-1 relative">
+                      <Search className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                       <input
                         type="text"
-                        value={cabang}
-                        onChange={(e) => setCabang(e.target.value)}
-                        placeholder="Enter branch code"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Cari berdasarkan Nomor Order, Nama Customer, No Telepon..."
+                        className="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base text-gray-900 bg-white"
                       />
-                      <Search className="absolute right-3 top-3.5 h-5 w-5 text-gray-400 pointer-events-none" />
                     </div>
-                  </div>
-
-                  {/* Tracking Type Selection */}
-                  <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 sm:p-6 border border-gray-200">
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <label className="flex items-center gap-3 cursor-pointer group">
-                        <input
-                          type="radio"
-                          name="tracking"
-                          value="harian"
-                          checked={trackingType === 'harian'}
-                          onChange={(e) => setTrackingType(e.target.value)}
-                          className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                        />
-                        <span className="text-sm sm:text-base font-medium text-gray-700 group-hover:text-gray-900">Tracking Harian</span>
-                      </label>
-                      <label className="flex items-center gap-3 cursor-pointer group">
-                        <input
-                          type="radio"
-                          name="tracking"
-                          value="bulanan"
-                          checked={trackingType === 'bulanan'}
-                          onChange={(e) => setTrackingType(e.target.value)}
-                          className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                        />
-                        <span className="text-sm sm:text-base font-medium text-gray-700 group-hover:text-gray-900">Tracking Bulanan</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {/* Date Range Selectors */}
-                  {trackingType === 'harian' ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* Start Date */}
-                      <div className="space-y-4">
-                        <h3 className="font-semibold text-gray-900">Start Date</h3>
-                        <div className="grid grid-cols-3 gap-3">
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">Day</label>
-                            <select
-                              value={selectedDay}
-                              onChange={(e) => setSelectedDay(e.target.value)}
-                              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-                            >
-                              {days.map((day) => (
-                                <option key={day} value={day}>{day}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">Month</label>
-                            <select
-                              value={selectedMonth}
-                              onChange={(e) => setSelectedMonth(e.target.value)}
-                              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-                            >
-                              {months.map((month) => (
-                                <option key={month} value={month}>{month}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">Year</label>
-                            <select
-                              value={selectedYear}
-                              onChange={(e) => setSelectedYear(e.target.value)}
-                              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-                            >
-                              {years.map((year) => (
-                                <option key={year} value={year}>{year}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* End Date */}
-                      <div className="space-y-4">
-                        <h3 className="font-semibold text-gray-900">End Date</h3>
-                        <div className="grid grid-cols-3 gap-3">
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">Day</label>
-                            <select
-                              value={selectedEndDay}
-                              onChange={(e) => setSelectedEndDay(e.target.value)}
-                              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-                            >
-                              {days.map((day) => (
-                                <option key={day} value={day}>{day}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">Month</label>
-                            <select
-                              value={selectedEndMonth}
-                              onChange={(e) => setSelectedEndMonth(e.target.value)}
-                              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-                            >
-                              {months.map((month) => (
-                                <option key={month} value={month}>{month}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div className="space-y-2">
-                            <label className="block text-sm font-medium text-gray-700">Year</label>
-                            <select
-                              value={selectedEndYear}
-                              onChange={(e) => setSelectedEndYear(e.target.value)}
-                              className="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
-                            >
-                              {years.map((year) => (
-                                <option key={year} value={year}>{year}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-gray-700">Select Month</label>
-                      <select
-                        value={selectedMonthOnly}
-                        onChange={(e) => setSelectedMonthOnly(e.target.value)}
-                        className="w-full md:w-1/2 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-white"
+                    <div className="flex gap-2 sm:gap-3">
+                      <button
+                        onClick={() => setShowFilterModal(true)}
+                        className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                       >
-                        {months.map((month) => (
-                          <option key={month} value={month}>{month}</option>
-                        ))}
-                      </select>
+                        <Filter className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
+                        <span className="text-xs sm:text-sm font-medium text-gray-700">Filter</span>
+                      </button>
+                      <button
+                        onClick={handleSearch}
+                        className="flex-1 sm:flex-none bg-gradient-to-r from-green-500 to-green-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2"
+                      >
+                        <Search className="h-4 w-4 sm:h-5 sm:w-5" />
+                        <span className="text-xs sm:text-sm">Cari</span>
+                      </button>
                     </div>
-                  )}
-
-                  {/* Search Button */}
-                  <div className="flex justify-center pt-4">
-                    <button
-                      onClick={handleSearch}
-                      className="bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center gap-2"
-                    >
-                      <Search className="h-5 w-5" />
-                      Cari
-                    </button>
                   </div>
 
                   {/* No Data Message */}
@@ -417,6 +295,157 @@ export default function IBookingPage() {
           </div>
         </main>
       </div>
+
+      {/* Filter Modal */}
+      {showFilterModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-2 sm:p-4">
+          <div className="bg-white rounded-lg sm:rounded-xl shadow-2xl max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between rounded-t-lg sm:rounded-t-xl z-10">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Filter className="h-5 w-5 sm:h-6 sm:w-6" />
+                <h3 className="text-base sm:text-xl font-bold">Filter Pencarian</h3>
+              </div>
+              <button
+                onClick={() => setShowFilterModal(false)}
+                className="p-1.5 sm:p-2 hover:bg-white/20 rounded-lg transition-colors"
+              >
+                <X className="h-5 w-5 sm:h-6 sm:w-6" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+              {/* Cabang */}
+              <div className="space-y-2">
+                <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                  Cabang
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={cabang}
+                    onChange={(e) => setCabang(e.target.value)}
+                    placeholder="Masukkan kode cabang"
+                    className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base text-gray-900 bg-white"
+                  />
+                  <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+
+             
+
+              {/* Date Filters */}
+          
+                <div className="space-y-4">
+                  {/* Date Range Toggle */}
+                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 sm:p-4 border border-blue-200">
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                      <input
+                        type="checkbox"
+                        checked={isDateRange}
+                        onChange={(e) => setIsDateRange(e.target.checked)}
+                        className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                      />
+                      <span className="text-xs sm:text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                        Filter dengan rentang tanggal
+                      </span>
+                    </label>
+                  </div>
+
+                  {/* Date Inputs */}
+                  <div className="grid grid-cols-1 gap-4">
+                    {/* Start/Single Date */}
+                    <div className="space-y-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                        {isDateRange ? 'Tanggal Mulai' : 'Tanggal'}
+                      </label>
+                      <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base text-gray-900 bg-white"
+                      />
+                    </div>
+
+                    {/* End Date - Only show for range */}
+                    {isDateRange && (
+                      <div className="space-y-2">
+                        <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                          Tanggal Akhir
+                        </label>
+                        <input
+                          type="date"
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          min={startDate}
+                          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base text-gray-900 bg-white"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Date Range Display */}
+                  {isDateRange && startDate && endDate && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
+                        <p className="text-xs sm:text-sm text-green-900">
+                          <span className="font-semibold">Periode: </span>
+                          {new Date(startDate).toLocaleDateString('id-ID')} s/d {new Date(endDate).toLocaleDateString('id-ID')}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {!isDateRange && startDate && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
+                        <p className="text-xs sm:text-sm text-green-900">
+                          <span className="font-semibold">Tanggal: </span>
+                          {new Date(startDate).toLocaleDateString('id-ID')}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              
+            </div>
+
+            {/* Modal Footer */}
+            <div className="sticky bottom-0 bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 rounded-b-lg sm:rounded-b-xl border-t">
+              <button
+                onClick={() => {
+                  setCabang('0102 - JAKBAR 2 CAR-LATUMENTEN')
+                  setTrackingType('bulanan')
+                  setStartDate('2025-10-01')
+                  setEndDate('2025-10-31')
+                  setIsDateRange(true)
+                  setSelectedMonthOnly('October')
+                }}
+                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-2.5 border border-gray-300 rounded-lg text-sm sm:text-base text-gray-700 font-medium hover:bg-gray-100 transition-colors"
+              >
+                Reset
+              </button>
+              <button
+                onClick={() => setShowFilterModal(false)}
+                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-2.5 border border-gray-300 rounded-lg text-sm sm:text-base text-gray-700 font-medium hover:bg-gray-100 transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => {
+                  setShowFilterModal(false)
+                  handleSearch()
+                }}
+                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-2.5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg text-sm sm:text-base font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+              >
+                Terapkan Filter
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

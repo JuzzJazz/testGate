@@ -64,6 +64,16 @@ export default function InformationPage() {
   const [bpkbDealerCode, setBpkbDealerCode] = useState('000095')
   const [showMutasiFilterModal, setShowMutasiFilterModal] = useState(false)
 
+  // Transfer Pembayaran date states
+  const [transferStartDate, setTransferStartDate] = useState('2025-05-01')
+  const [transferEndDate, setTransferEndDate] = useState('2025-05-31')
+  const [isTransferDateRange, setIsTransferDateRange] = useState(true)
+
+  // Mutasi date states
+  const [mutasiStartDate, setMutasiStartDate] = useState('2025-10-01')
+  const [mutasiEndDate, setMutasiEndDate] = useState('2025-10-31')
+  const [isMutasiDateRange, setIsMutasiDateRange] = useState(true)
+
   const menuItems = [
     { icon: Home, label: 'Home', href: '/dashboard' },
     { icon: ShoppingCart, label: 'Order', href: '/order' },
@@ -316,34 +326,6 @@ export default function InformationPage() {
               <div className="p-4 sm:p-6 lg:p-8">
                 {activeTab === 'transfer' && (
                   <div className="space-y-6">
-                    {/* Tracking Type Selection */}
-                    <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 sm:p-6 border border-gray-200">
-                      <div className="flex flex-col sm:flex-row gap-4">
-                        <label className="flex items-center gap-3 cursor-pointer group">
-                          <input
-                            type="radio"
-                            name="tracking"
-                            value="harian"
-                            checked={trackingType === 'harian'}
-                            onChange={(e) => setTrackingType(e.target.value)}
-                            className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                          />
-                          <span className="text-sm sm:text-base font-medium text-gray-700 group-hover:text-gray-900">Tracking Harian</span>
-                        </label>
-                        <label className="flex items-center gap-3 cursor-pointer group">
-                          <input
-                            type="radio"
-                            name="tracking"
-                            value="bulanan"
-                            checked={trackingType === 'bulanan'}
-                            onChange={(e) => setTrackingType(e.target.value)}
-                            className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                          />
-                          <span className="text-sm sm:text-base font-medium text-gray-700 group-hover:text-gray-900">Tracking Bulanan</span>
-                        </label>
-                      </div>
-                    </div>
-
                     {/* Simple Search Bar with Filter */}
                     <div className="flex flex-col sm:flex-row gap-3">
                       <div className="flex-1 relative">
@@ -967,97 +949,69 @@ export default function InformationPage() {
                 </div>
               </div>
 
-              {/* Date Range */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                {/* Start Date */}
-                <div className="space-y-2 sm:space-y-3">
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                    Tanggal Mulai
-                  </label>
-                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Tanggal</label>
-                      <select
-                        value={selectedDay}
-                        onChange={(e) => setSelectedDay(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {days.map((day) => (
-                          <option key={day} value={day}>{day}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Bulan</label>
-                      <select
-                        value={selectedMonth}
-                        onChange={(e) => setSelectedMonth(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {months.map((month) => (
-                          <option key={month} value={month}>{month.substring(0, 3)}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Tahun</label>
-                      <select
-                        value={selectedYear}
-                        onChange={(e) => setSelectedYear(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {years.map((year) => (
-                          <option key={year} value={year}>{year}</option>
-                        ))}
-                      </select>
-                    </div>
+              {/* Date Range Toggle */}
+              <div className="space-y-3">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={isTransferDateRange}
+                    onChange={(e) => setIsTransferDateRange(e.target.checked)}
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                  />
+                  <span className="text-xs sm:text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                    Filter dengan rentang tanggal
+                  </span>
+                </label>
+
+                {/* Date Inputs */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Start/Single Date */}
+                  <div className="space-y-2">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                      {isTransferDateRange ? 'Tanggal Mulai' : 'Tanggal'}
+                    </label>
+                    <input
+                      type="date"
+                      value={transferStartDate}
+                      onChange={(e) => setTransferStartDate(e.target.value)}
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base text-gray-900 bg-white"
+                    />
                   </div>
+
+                  {/* End Date - Only show for range */}
+                  {isTransferDateRange && (
+                    <div className="space-y-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                        Tanggal Akhir
+                      </label>
+                      <input
+                        type="date"
+                        value={transferEndDate}
+                        onChange={(e) => setTransferEndDate(e.target.value)}
+                        min={transferStartDate}
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base text-gray-900 bg-white"
+                      />
+                    </div>
+                  )}
                 </div>
 
-                {/* End Date */}
-                <div className="space-y-2 sm:space-y-3">
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                    Tanggal Akhir
-                  </label>
-                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Tanggal</label>
-                      <select
-                        value={selectedEndDay}
-                        onChange={(e) => setSelectedEndDay(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {days.map((day) => (
-                          <option key={day} value={day}>{day}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Bulan</label>
-                      <select
-                        value={selectedEndMonth}
-                        onChange={(e) => setSelectedEndMonth(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {months.map((month) => (
-                          <option key={month} value={month}>{month.substring(0, 3)}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Tahun</label>
-                      <select
-                        value={selectedEndYear}
-                        onChange={(e) => setSelectedEndYear(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {years.map((year) => (
-                          <option key={year} value={year}>{year}</option>
-                        ))}
-                      </select>
-                    </div>
+                {/* Date Range Display */}
+                {isTransferDateRange && transferStartDate && transferEndDate && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p className="text-xs sm:text-sm text-blue-900">
+                      <span className="font-semibold">Periode: </span>
+                      {new Date(transferStartDate).toLocaleDateString('id-ID')} s/d {new Date(transferEndDate).toLocaleDateString('id-ID')}
+                    </p>
                   </div>
-                </div>
+                )}
+                {!isTransferDateRange && transferStartDate && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <p className="text-xs sm:text-sm text-blue-900">
+                      <span className="font-semibold">Tanggal: </span>
+                      {new Date(transferStartDate).toLocaleDateString('id-ID')}
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Rekening */}
@@ -1083,12 +1037,9 @@ export default function InformationPage() {
               <button
                 onClick={() => {
                   setDealerCode('000195')
-                  setSelectedDay('1')
-                  setSelectedMonth('May')
-                  setSelectedYear('2025')
-                  setSelectedEndDay('31')
-                  setSelectedEndMonth('May')
-                  setSelectedEndYear('2025')
+                  setTransferStartDate('2025-05-01')
+                  setTransferEndDate('2025-05-31')
+                  setIsTransferDateRange(true)
                   setRekening('ALL')
                 }}
                 className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-2.5 border border-gray-300 rounded-lg text-sm sm:text-base text-gray-700 font-medium hover:bg-gray-100 transition-colors"
@@ -1168,144 +1119,69 @@ export default function InformationPage() {
                 </select>
               </div>
 
-              {/* Tracking Type */}
-              <div className="space-y-2">
-                <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                  Tipe Tracking
+              {/* Date Range Toggle */}
+              <div className="space-y-3">
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={isMutasiDateRange}
+                    onChange={(e) => setIsMutasiDateRange(e.target.checked)}
+                    className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 rounded focus:ring-2 focus:ring-purple-500"
+                  />
+                  <span className="text-xs sm:text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                    Filter dengan rentang tanggal
+                  </span>
                 </label>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <label className="flex items-center gap-3 cursor-pointer group">
+
+                {/* Date Inputs */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Start/Single Date */}
+                  <div className="space-y-2">
+                    <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                      {isMutasiDateRange ? 'Tanggal Mulai' : 'Tanggal'}
+                    </label>
                     <input
-                      type="radio"
-                      name="mutasiTracking"
-                      value="harian"
-                      checked={mutasiTrackingType === 'harian'}
-                      onChange={(e) => setMutasiTrackingType(e.target.value)}
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 focus:ring-2 focus:ring-purple-500"
+                      type="date"
+                      value={mutasiStartDate}
+                      onChange={(e) => setMutasiStartDate(e.target.value)}
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm sm:text-base text-gray-900 bg-white"
                     />
-                    <span className="text-xs sm:text-sm font-medium text-gray-700 group-hover:text-gray-900">Tracking Harian</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <input
-                      type="radio"
-                      name="mutasiTracking"
-                      value="bulanan"
-                      checked={mutasiTrackingType === 'bulanan'}
-                      onChange={(e) => setMutasiTrackingType(e.target.value)}
-                      className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 focus:ring-2 focus:ring-purple-500"
-                    />
-                    <span className="text-xs sm:text-sm font-medium text-gray-700 group-hover:text-gray-900">Tracking Bulanan</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Date Range */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                {/* Start Date */}
-                <div className="space-y-2 sm:space-y-3">
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                    Tanggal Mulai
-                  </label>
-                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Tanggal</label>
-                      <select
-                        value={selectedMutasiDay}
-                        onChange={(e) => setSelectedMutasiDay(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {days.map((day) => (
-                          <option key={day} value={day}>{day}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Bulan</label>
-                      <select
-                        value={selectedMutasiMonth}
-                        onChange={(e) => setSelectedMutasiMonth(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {months.map((month) => (
-                          <option key={month} value={month}>{month.substring(0, 3)}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Tahun</label>
-                      <select
-                        value={selectedMutasiYear}
-                        onChange={(e) => setSelectedMutasiYear(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {years.map((year) => (
-                          <option key={year} value={year}>{year}</option>
-                        ))}
-                      </select>
-                    </div>
                   </div>
+
+                  {/* End Date - Only show for range */}
+                  {isMutasiDateRange && (
+                    <div className="space-y-2">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700">
+                        Tanggal Akhir
+                      </label>
+                      <input
+                        type="date"
+                        value={mutasiEndDate}
+                        onChange={(e) => setMutasiEndDate(e.target.value)}
+                        min={mutasiStartDate}
+                        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm sm:text-base text-gray-900 bg-white"
+                      />
+                    </div>
+                  )}
                 </div>
 
-                {/* End Date */}
-                <div className="space-y-2 sm:space-y-3">
-                  <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                    Tanggal Akhir
-                  </label>
-                  <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Tanggal</label>
-                      <select
-                        value={selectedMutasiEndDay}
-                        onChange={(e) => setSelectedMutasiEndDay(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {days.map((day) => (
-                          <option key={day} value={day}>{day}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Bulan</label>
-                      <select
-                        value={selectedMutasiEndMonth}
-                        onChange={(e) => setSelectedMutasiEndMonth(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {months.map((month) => (
-                          <option key={month} value={month}>{month.substring(0, 3)}</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-xs text-gray-600 mb-1">Tahun</label>
-                      <select
-                        value={selectedMutasiEndYear}
-                        onChange={(e) => setSelectedMutasiEndYear(e.target.value)}
-                        className="w-full px-2 sm:px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-xs sm:text-sm text-gray-900 bg-white"
-                      >
-                        {years.map((year) => (
-                          <option key={year} value={year}>{year}</option>
-                        ))}
-                      </select>
-                    </div>
+                {/* Date Range Display */}
+                {isMutasiDateRange && mutasiStartDate && mutasiEndDate && (
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                    <p className="text-xs sm:text-sm text-purple-900">
+                      <span className="font-semibold">Periode: </span>
+                      {new Date(mutasiStartDate).toLocaleDateString('id-ID')} s/d {new Date(mutasiEndDate).toLocaleDateString('id-ID')}
+                    </p>
                   </div>
-                </div>
-              </div>
-
-              {/* Month Selector for Bulanan */}
-              <div className="space-y-2">
-                <label className="block text-xs sm:text-sm font-medium text-gray-700">
-                  Bulan (untuk Tracking Bulanan)
-                </label>
-                <select
-                  value={selectedMutasiMonth}
-                  onChange={(e) => setSelectedMutasiMonth(e.target.value)}
-                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 text-sm sm:text-base text-gray-900 bg-white"
-                >
-                  {months.map((month) => (
-                    <option key={month} value={month}>{month}</option>
-                  ))}
-                </select>
+                )}
+                {!isMutasiDateRange && mutasiStartDate && (
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                    <p className="text-xs sm:text-sm text-purple-900">
+                      <span className="font-semibold">Tanggal: </span>
+                      {new Date(mutasiStartDate).toLocaleDateString('id-ID')}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1316,12 +1192,9 @@ export default function InformationPage() {
                   setDealerCode('000095')
                   setJenisMutasi('Pre Payment')
                   setMutasiTrackingType('bulanan')
-                  setSelectedMutasiDay('1')
-                  setSelectedMutasiMonth('October')
-                  setSelectedMutasiYear('2025')
-                  setSelectedMutasiEndDay('31')
-                  setSelectedMutasiEndMonth('October')
-                  setSelectedMutasiEndYear('2025')
+                  setMutasiStartDate('2025-10-01')
+                  setMutasiEndDate('2025-10-31')
+                  setIsMutasiDateRange(true)
                 }}
                 className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-2.5 border border-gray-300 rounded-lg text-sm sm:text-base text-gray-700 font-medium hover:bg-gray-100 transition-colors"
               >

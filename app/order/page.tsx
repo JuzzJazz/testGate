@@ -27,7 +27,18 @@ import {
   Calendar,
   Building2,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  CheckCircle,
+  Clock,
+  XCircle,
+  AlertCircle,
+  FilePlus,
+  Send,
+  FileX,
+  FileCheck,
+  TrendingUp,
+  Eye,
+  CalendarDays
 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
@@ -40,9 +51,9 @@ export default function OrderPage() {
   const [selectedDealer, setSelectedDealer] = useState('')
   const [dealerCode, setDealerCode] = useState('')
   const [selectedBranch, setSelectedBranch] = useState('Cabang Budira')
-  const [selectedMonth, setSelectedMonth] = useState('November')
-  const [selectedYear, setSelectedYear] = useState('2025')
-  const [selectedDay, setSelectedDay] = useState('7')
+  const [startDate, setStartDate] = useState('2024-11-07')
+  const [endDate, setEndDate] = useState('2024-11-07')
+  const [isDateRange, setIsDateRange] = useState(false)
   const [selectedTrackingStatus, setSelectedTrackingStatus] = useState('')
   const [selectedOrderStatus, setSelectedOrderStatus] = useState('')
   const [showResults, setShowResults] = useState(false)
@@ -55,12 +66,9 @@ export default function OrderPage() {
   const [dokumenDealer, setDokumenDealer] = useState('')
   const [dokumenDealerCode, setDokumenDealerCode] = useState('000195')
   const [dokumenTrackingType, setDokumenTrackingType] = useState('harian')
-  const [dokumenDay, setDokumenDay] = useState('1')
-  const [dokumenMonth, setDokumenMonth] = useState('November')
-  const [dokumenYear, setDokumenYear] = useState('2024')
-  const [dokumenEndDay, setDokumenEndDay] = useState('30')
-  const [dokumenEndMonth, setDokumenEndMonth] = useState('November')
-  const [dokumenEndYear, setDokumenEndYear] = useState('2024')
+  const [dokumenStartDate, setDokumenStartDate] = useState('2024-11-01')
+  const [dokumenEndDate, setDokumenEndDate] = useState('2024-11-30')
+  const [isDokumenDateRange, setIsDokumenDateRange] = useState(true)
   const [dokumenBranch, setDokumenBranch] = useState('All Cabang')
   const [dokumenStatus, setDokumenStatus] = useState('Semua Status')
   const [showDokumenResults, setShowDokumenResults] = useState(false)
@@ -103,20 +111,20 @@ export default function OrderPage() {
     'Dibatalkan'
   ]
 
-  // Mock data untuk summary order
+  // Mock data untuk summary order dengan icon
   const summaryData = [
-    { status: 'Proses Verifikasi', jumlah: 1, color: 'bg-blue-500' },
-    { status: 'Proses Survey', jumlah: 0, color: 'bg-purple-500' },
-    { status: 'Proses Approval', jumlah: 1, color: 'bg-orange-500' },
-    { status: 'Reject', jumlah: 0, color: 'bg-red-500' },
-    { status: 'Proses Pemenuhan Persyaratan Kredit', jumlah: 0, color: 'bg-yellow-500' },
-    { status: 'Approved & Cetak PO', jumlah: 2, color: 'bg-green-500' },
-    { status: 'Sudah Kirim Invoice', jumlah: 1, color: 'bg-teal-500' },
-    { status: 'Cancel Order', jumlah: 4, color: 'bg-gray-500' },
-    { status: 'Cancel PO', jumlah: 0, color: 'bg-gray-600' },
-    { status: 'Tagihan Terverifikasi', jumlah: 3, color: 'bg-indigo-500' },
-    { status: 'Sudah PPD', jumlah: 0, color: 'bg-pink-500' },
-    { status: 'Sudah Pembayaran Produk', jumlah: 0, color: 'bg-cyan-500' },
+    { status: 'Proses Verifikasi', jumlah: 1, color: 'bg-blue-500', bgGradient: 'from-blue-500 to-blue-600', icon: Clock, lightBg: 'bg-blue-50', textColor: 'text-blue-700', borderColor: 'border-blue-200' },
+    { status: 'Proses Survey', jumlah: 0, color: 'bg-purple-500', bgGradient: 'from-purple-500 to-purple-600', icon: Eye, lightBg: 'bg-purple-50', textColor: 'text-purple-700', borderColor: 'border-purple-200' },
+    { status: 'Proses Approval', jumlah: 1, color: 'bg-orange-500', bgGradient: 'from-orange-500 to-orange-600', icon: AlertCircle, lightBg: 'bg-orange-50', textColor: 'text-orange-700', borderColor: 'border-orange-200' },
+    { status: 'Reject', jumlah: 0, color: 'bg-red-500', bgGradient: 'from-red-500 to-red-600', icon: XCircle, lightBg: 'bg-red-50', textColor: 'text-red-700', borderColor: 'border-red-200' },
+    { status: 'Proses Pemenuhan Persyaratan Kredit', jumlah: 0, color: 'bg-yellow-500', bgGradient: 'from-yellow-500 to-yellow-600', icon: FilePlus, lightBg: 'bg-yellow-50', textColor: 'text-yellow-700', borderColor: 'border-yellow-200' },
+    { status: 'Approved & Cetak PO', jumlah: 2, color: 'bg-green-500', bgGradient: 'from-green-500 to-green-600', icon: CheckCircle, lightBg: 'bg-green-50', textColor: 'text-green-700', borderColor: 'border-green-200' },
+    { status: 'Sudah Kirim Invoice', jumlah: 1, color: 'bg-teal-500', bgGradient: 'from-teal-500 to-teal-600', icon: Send, lightBg: 'bg-teal-50', textColor: 'text-teal-700', borderColor: 'border-teal-200' },
+    { status: 'Cancel Order', jumlah: 4, color: 'bg-gray-500', bgGradient: 'from-gray-500 to-gray-600', icon: FileX, lightBg: 'bg-gray-50', textColor: 'text-gray-700', borderColor: 'border-gray-200' },
+    { status: 'Cancel PO', jumlah: 0, color: 'bg-gray-600', bgGradient: 'from-gray-600 to-gray-700', icon: XCircle, lightBg: 'bg-gray-50', textColor: 'text-gray-700', borderColor: 'border-gray-200' },
+    { status: 'Tagihan Terverifikasi', jumlah: 3, color: 'bg-indigo-500', bgGradient: 'from-indigo-500 to-indigo-600', icon: FileCheck, lightBg: 'bg-indigo-50', textColor: 'text-indigo-700', borderColor: 'border-indigo-200' },
+    { status: 'Sudah PPD', jumlah: 0, color: 'bg-pink-500', bgGradient: 'from-pink-500 to-pink-600', icon: TrendingUp, lightBg: 'bg-pink-50', textColor: 'text-pink-700', borderColor: 'border-pink-200' },
+    { status: 'Sudah Pembayaran Produk', jumlah: 0, color: 'bg-cyan-500', bgGradient: 'from-cyan-500 to-cyan-600', icon: CheckCircle, lightBg: 'bg-cyan-50', textColor: 'text-cyan-700', borderColor: 'border-cyan-200' },
   ]
 
   // Mock data untuk detail table
@@ -134,10 +142,10 @@ export default function OrderPage() {
     }
   ]
 
-  // Mock data untuk dokumen susulan summary
+  // Mock data untuk dokumen susulan summary dengan icon dan styling
   const dokumenSummaryData = [
-    { status: 'Dokumen Susulan', jumlah: 0 },
-    { status: 'Sudah Kirim Dokumen', jumlah: 0 },
+    { status: 'Dokumen Susulan', jumlah: 0, color: 'bg-orange-500', bgGradient: 'from-orange-500 to-orange-600', icon: FileText, lightBg: 'bg-orange-50', textColor: 'text-orange-700', borderColor: 'border-orange-200' },
+    { status: 'Sudah Kirim Dokumen', jumlah: 0, color: 'bg-blue-500', bgGradient: 'from-blue-500 to-blue-600', icon: Send, lightBg: 'bg-blue-50', textColor: 'text-blue-700', borderColor: 'border-blue-200' },
   ]
 
   const handleSearch = () => {
@@ -146,9 +154,9 @@ export default function OrderPage() {
       selectedDealer,
       dealerCode,
       selectedBranch,
-      selectedMonth,
-      selectedYear,
-      selectedDay
+      startDate,
+      endDate,
+      isDateRange
     })
     setShowResults(true)
     setShowDetailTable(false)
@@ -163,9 +171,9 @@ export default function OrderPage() {
     setSelectedDealer('')
     setDealerCode('')
     setSelectedBranch('Cabang Budira')
-    setSelectedMonth('November')
-    setSelectedYear('2025')
-    setSelectedDay('7')
+    setStartDate('2024-11-07')
+    setEndDate('2024-11-07')
+    setIsDateRange(false)
     setSelectedTrackingStatus('')
     setSelectedOrderStatus('')
   }
@@ -204,12 +212,9 @@ export default function OrderPage() {
     setDokumenDealer('')
     setDokumenDealerCode('000195')
     setDokumenTrackingType('harian')
-    setDokumenDay('1')
-    setDokumenMonth('November')
-    setDokumenYear('2024')
-    setDokumenEndDay('30')
-    setDokumenEndMonth('November')
-    setDokumenEndYear('2024')
+    setDokumenStartDate('2024-11-01')
+    setDokumenEndDate('2024-11-30')
+    setIsDokumenDateRange(true)
     setDokumenBranch('All Cabang')
     setDokumenStatus('Semua Status')
   }
@@ -454,38 +459,6 @@ export default function OrderPage() {
 
                       {/* Modal Body - Scrollable */}
                       <div className="p-4 sm:p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
-                        {/* Tracking Type Radio Buttons */}
-                        <div className="mb-5">
-                          <label className="block text-sm font-semibold text-gray-700 mb-3">Jenis Tracking</label>
-                          <div className="flex flex-wrap gap-4">
-                            <label className="flex items-center gap-2 cursor-pointer group">
-                              <input
-                                type="radio"
-                                name="tracking"
-                                value="harian"
-                                checked={trackingType === 'harian'}
-                                onChange={(e) => setTrackingType(e.target.value)}
-                                className="w-4 h-4 text-green-600 focus:ring-2 focus:ring-green-500 cursor-pointer"
-                              />
-                              <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Tracking Harian</span>
-                            </label>
-                            <label className="flex items-center gap-2 cursor-pointer group">
-                              <input
-                                type="radio"
-                                name="tracking"
-                                value="bulanan"
-                                checked={trackingType === 'bulanan'}
-                                onChange={(e) => setTrackingType(e.target.value)}
-                                className="w-4 h-4 text-green-600 focus:ring-2 focus:ring-green-500 cursor-pointer"
-                              />
-                              <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">Tracking Bulanan</span>
-                            </label>
-                          </div>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="border-t border-gray-200 mb-5"></div>
-
                         {/* Filter Fields */}
                         <div className="space-y-4">
                           {/* Row 1: Dealer & Dealer Code */}
@@ -518,45 +491,77 @@ export default function OrderPage() {
                             </div>
                           </div>
 
-                          {/* Row 2: Date Fields */}
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Hari</label>
-                              <select
-                                value={selectedDay}
-                                onChange={(e) => setSelectedDay(e.target.value)}
-                                className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
-                              >
-                                {days.map((day) => (
-                                  <option key={day} value={day}>{day}</option>
-                                ))}
-                              </select>
+                          {/* Date Range Toggle */}
+                          <div className="mb-4">
+                            <div className="flex items-center gap-4">
+                              <label className="flex items-center gap-2 cursor-pointer group">
+                                <input
+                                  type="checkbox"
+                                  checked={isDateRange}
+                                  onChange={(e) => setIsDateRange(e.target.checked)}
+                                  className="w-4 h-4 text-green-600 focus:ring-2 focus:ring-green-500 rounded cursor-pointer"
+                                />
+                                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                                  Gunakan Range Tanggal
+                                </span>
+                              </label>
+                            </div>
+                          </div>
+
+                          {/* Date Picker Section */}
+                          <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-lg p-4 border-2 border-green-200">
+                            <div className="flex items-center gap-2 mb-3">
+                              <CalendarDays className="h-5 w-5 text-green-600" />
+                              <h4 className="text-sm font-semibold text-gray-900">
+                                {isDateRange ? 'Pilih Range Tanggal' : 'Pilih Tanggal'}
+                              </h4>
+                            </div>
+                            
+                            <div className={`grid ${isDateRange ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'} gap-4`}>
+                              <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {isDateRange ? 'Tanggal Mulai' : 'Tanggal'}
+                                </label>
+                                <input
+                                  type="date"
+                                  value={startDate}
+                                  onChange={(e) => setStartDate(e.target.value)}
+                                  className="w-full px-4 py-3 text-sm border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white font-medium shadow-sm hover:border-green-400 transition-colors"
+                                />
+                              </div>
+
+                              {isDateRange && (
+                                <div>
+                                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Tanggal Akhir
+                                  </label>
+                                  <input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    min={startDate}
+                                    className="w-full px-4 py-3 text-sm border-2 border-green-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white font-medium shadow-sm hover:border-green-400 transition-colors"
+                                  />
+                                </div>
+                              )}
                             </div>
 
-                            <div>
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Bulan</label>
-                              <select
-                                value={selectedMonth}
-                                onChange={(e) => setSelectedMonth(e.target.value)}
-                                className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
-                              >
-                                {months.map((month) => (
-                                  <option key={month} value={month}>{month}</option>
-                                ))}
-                              </select>
-                            </div>
-
-                            <div className="col-span-2 sm:col-span-1">
-                              <label className="block text-sm font-medium text-gray-700 mb-2">Tahun</label>
-                              <select
-                                value={selectedYear}
-                                onChange={(e) => setSelectedYear(e.target.value)}
-                                className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
-                              >
-                                {years.map((year) => (
-                                  <option key={year} value={year}>{year}</option>
-                                ))}
-                              </select>
+                            {/* Date Info Display */}
+                            <div className="mt-3 p-3 bg-white/70 rounded-lg border border-green-200">
+                              <p className="text-xs text-gray-600">
+                                <span className="font-semibold text-green-700">Periode yang dipilih:</span>
+                                {isDateRange ? (
+                                  <span className="ml-2 font-medium text-gray-900">
+                                    {new Date(startDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })} 
+                                    {' - '} 
+                                    {new Date(endDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                  </span>
+                                ) : (
+                                  <span className="ml-2 font-medium text-gray-900">
+                                    {new Date(startDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}
+                                  </span>
+                                )}
+                              </p>
                             </div>
                           </div>
 
@@ -646,43 +651,61 @@ export default function OrderPage() {
                     /* Detail Table View */
                     <div className="bg-white border-t border-gray-200">
                       {/* Header with back button */}
-                      <div className="p-3 sm:p-4 lg:p-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3">
+                      <div className="p-4 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-green-50 via-white to-green-50">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                           <button
                             onClick={handleBackToSummary}
-                            className="flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors w-full sm:w-auto justify-center sm:justify-start"
+                            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm w-full sm:w-auto justify-center sm:justify-start"
                           >
-                            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-                            <span className="hidden sm:inline">Kembali ke Summary</span>
-                            <span className="sm:hidden">Kembali</span>
+                            <ArrowLeft className="h-4 w-4" />
+                            <span>Kembali ke Summary</span>
                           </button>
                           <button
                             onClick={downloadExcel}
-                            className="flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors shadow-md w-full sm:w-auto justify-center"
+                            className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 rounded-lg transition-all shadow-md hover:shadow-lg w-full sm:w-auto justify-center"
                           >
-                            <Download className="h-3 w-3 sm:h-4 sm:w-4" />
-                            <span className="hidden sm:inline">Download List Order</span>
-                            <span className="sm:hidden">Download</span>
+                            <Download className="h-4 w-4" />
+                            <span>Download List Order</span>
                           </button>
                         </div>
-                        <div className="space-y-1">
-                          <h3 className="text-base sm:text-lg font-bold text-gray-900">Summary Order Dlc 000195</h3>
-                          <p className="text-xs sm:text-sm text-gray-600">Periode 01/11/2024 s/d 30/11/2024</p>
-                          <p className="text-xs sm:text-sm text-gray-600">Total: 1</p>
+                        <div className="flex items-start gap-3">
+                          <div className="p-3 bg-green-100 rounded-lg">
+                            <FileText className="h-6 w-6 text-green-600" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-bold text-gray-900 mb-1">Detail Order - {selectedStatus}</h3>
+                            <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-4 w-4" />
+                                Periode: 01/11/2024 - 30/11/2024
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Package className="h-4 w-4" />
+                                Total: {detailTableData.length} order
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
                       {/* Table Controls */}
-                      <div className="p-3 sm:p-4 bg-gray-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                        <button className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-white bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
-                          <span>Show</span>
-                          <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
-                        </button>
-                        <div className="flex items-center gap-2">
-                          <span className="text-white text-xs sm:text-sm whitespace-nowrap">Search:</span>
+                      <div className="p-4 bg-gradient-to-r from-gray-700 to-gray-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <label className="text-white text-sm font-medium">Show:</label>
+                          <select className="px-3 py-2 text-sm bg-gray-600 text-white border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option>10</option>
+                            <option>25</option>
+                            <option>50</option>
+                            <option>100</option>
+                          </select>
+                          <span className="text-white text-sm">entries</span>
+                        </div>
+                        <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+                          <label className="text-white text-sm font-medium whitespace-nowrap">Search:</label>
                           <input
                             type="text"
-                            className="flex-1 sm:flex-initial px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-green-500"
+                            placeholder="Cari..."
+                            className="flex-1 sm:w-64 px-3 py-2 text-sm border border-gray-500 rounded-lg bg-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
                           />
                         </div>
                       </div>
@@ -690,65 +713,73 @@ export default function OrderPage() {
                       {/* Detail Table - Desktop */}
                       <div className="hidden lg:block overflow-x-auto">
                         <table className="w-full">
-                          <thead className="bg-yellow-400 text-gray-900">
+                          <thead className="bg-gradient-to-r from-green-500 to-green-600 text-white">
                             <tr>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">No.</th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-green-400">
                                 <div className="flex items-center gap-1">
+                                  No.
+                                </div>
+                              </th>
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-green-400">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-green-100">
                                   Tanggal Order
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
                               </th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">
-                                <div className="flex items-center gap-1">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-green-400">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-green-100">
                                   No. Aplikasi
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
                               </th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">
-                                <div className="flex items-center gap-1">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-green-400">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-green-100">
                                   Tanggal Aplikasi
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
                               </th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">Cabang</th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">
-                                <div className="flex items-center gap-1">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-green-400">Cabang</th>
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-green-400">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-green-100">
                                   Nama Pemohon
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
                               </th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">
-                                <div className="flex items-center gap-1">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-green-400">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-green-100">
                                   Nama Pada BPKB
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
                               </th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">Status</th>
-                              <th className="px-4 py-3 text-left text-sm font-bold">
-                                <div className="flex items-center gap-1">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-green-400">Status</th>
+                              <th className="px-4 py-4 text-left text-sm font-bold">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-green-100">
                                   Tanggal Status
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
                               </th>
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody className="divide-y divide-gray-200">
                             {detailTableData.map((row, index) => (
-                              <tr key={index} className={index % 2 === 0 ? 'bg-yellow-50' : 'bg-white'}>
-                                <td className="px-4 py-3 text-sm border-r border-gray-200">{row.no}</td>
-                                <td className="px-4 py-3 text-sm border-r border-gray-200">{row.tanggalOrder}</td>
-                                <td className="px-4 py-3 text-sm border-r border-gray-200">
-                                  <button className="text-blue-600 hover:text-blue-800 hover:underline">
+                              <tr key={index} className={`${index % 2 === 0 ? 'bg-green-50/30' : 'bg-white'} hover:bg-green-100/50 transition-colors`}>
+                                <td className="px-4 py-4 text-sm border-r border-gray-200 font-semibold text-gray-700">{row.no}</td>
+                                <td className="px-4 py-4 text-sm border-r border-gray-200 text-gray-600">{row.tanggalOrder}</td>
+                                <td className="px-4 py-4 text-sm border-r border-gray-200">
+                                  <button className="text-blue-600 hover:text-blue-800 hover:underline font-semibold transition-colors">
                                     {row.noAplikasi}
                                   </button>
                                 </td>
-                                <td className="px-4 py-3 text-sm border-r border-gray-200">{row.tanggalAplikasi}</td>
-                                <td className="px-4 py-3 text-sm border-r border-gray-200">{row.cabang}</td>
-                                <td className="px-4 py-3 text-sm border-r border-gray-200">{row.namaPemohon}</td>
-                                <td className="px-4 py-3 text-sm border-r border-gray-200">{row.namaPadaBPKB}</td>
-                                <td className="px-4 py-3 text-sm border-r border-gray-200">{row.status}</td>
-                                <td className="px-4 py-3 text-sm">{row.tanggalStatus}</td>
+                                <td className="px-4 py-4 text-sm border-r border-gray-200 text-gray-600">{row.tanggalAplikasi}</td>
+                                <td className="px-4 py-4 text-sm border-r border-gray-200 text-gray-900 font-medium">{row.cabang}</td>
+                                <td className="px-4 py-4 text-sm border-r border-gray-200 text-gray-900 font-medium">{row.namaPemohon}</td>
+                                <td className="px-4 py-4 text-sm border-r border-gray-200 text-gray-600">{row.namaPadaBPKB || '-'}</td>
+                                <td className="px-4 py-4 text-sm border-r border-gray-200">
+                                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-200">
+                                    {row.status}
+                                  </span>
+                                </td>
+                                <td className="px-4 py-4 text-sm text-gray-600">{row.tanggalStatus}</td>
                               </tr>
                             ))}
                           </tbody>
@@ -756,57 +787,59 @@ export default function OrderPage() {
                       </div>
 
                       {/* Detail Table - Mobile/Tablet Card View */}
-                      <div className="lg:hidden p-3 sm:p-4 space-y-3">
+                      <div className="lg:hidden p-4 space-y-4">
                         {detailTableData.map((row, index) => (
-                          <div key={index} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
-                            <div className="flex items-start justify-between mb-3 pb-3 border-b border-gray-200">
-                              <div>
-                                <span className="text-xs text-gray-500">No. Aplikasi</span>
-                                <button className="block text-sm font-semibold text-blue-600 hover:text-blue-800 hover:underline mt-1">
+                          <div key={index} className="bg-white border-2 border-gray-200 rounded-xl p-5 shadow-md hover:shadow-lg transition-all hover:border-green-300">
+                            <div className="flex items-start justify-between mb-4 pb-4 border-b-2 border-gray-100">
+                              <div className="flex-1">
+                                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1 block">No. Aplikasi</span>
+                                <button className="text-base font-bold text-blue-600 hover:text-blue-800 hover:underline transition-colors">
                                   {row.noAplikasi}
                                 </button>
                               </div>
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                              <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-green-500 to-green-600 text-white shadow-sm">
                                 #{row.no}
                               </span>
                             </div>
                             
-                            <div className="space-y-2.5">
-                              <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                  <span className="text-xs text-gray-500">Tanggal Order</span>
-                                  <p className="text-xs sm:text-sm font-medium text-gray-900 mt-0.5">{row.tanggalOrder}</p>
+                            <div className="space-y-3">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-gray-50 rounded-lg p-3">
+                                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">Tanggal Order</span>
+                                  <p className="text-sm font-semibold text-gray-900">{row.tanggalOrder}</p>
                                 </div>
-                                <div>
-                                  <span className="text-xs text-gray-500">Tanggal Aplikasi</span>
-                                  <p className="text-xs sm:text-sm font-medium text-gray-900 mt-0.5">{row.tanggalAplikasi}</p>
-                                </div>
-                              </div>
-                              
-                              <div>
-                                <span className="text-xs text-gray-500">Cabang</span>
-                                <p className="text-xs sm:text-sm font-medium text-gray-900 mt-0.5">{row.cabang}</p>
-                              </div>
-                              
-                              <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                  <span className="text-xs text-gray-500">Nama Pemohon</span>
-                                  <p className="text-xs sm:text-sm font-medium text-gray-900 mt-0.5">{row.namaPemohon}</p>
-                                </div>
-                                <div>
-                                  <span className="text-xs text-gray-500">Nama Pada BPKB</span>
-                                  <p className="text-xs sm:text-sm font-medium text-gray-900 mt-0.5">{row.namaPadaBPKB || '-'}</p>
+                                <div className="bg-gray-50 rounded-lg p-3">
+                                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">Tanggal Aplikasi</span>
+                                  <p className="text-sm font-semibold text-gray-900">{row.tanggalAplikasi}</p>
                                 </div>
                               </div>
                               
-                              <div className="pt-2 border-t border-gray-200 grid grid-cols-2 gap-3">
+                              <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+                                <span className="text-xs font-semibold text-blue-600 uppercase tracking-wide block mb-1">Cabang</span>
+                                <p className="text-sm font-semibold text-gray-900">{row.cabang}</p>
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-gray-50 rounded-lg p-3">
+                                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">Nama Pemohon</span>
+                                  <p className="text-sm font-semibold text-gray-900">{row.namaPemohon}</p>
+                                </div>
+                                <div className="bg-gray-50 rounded-lg p-3">
+                                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1">Nama BPKB</span>
+                                  <p className="text-sm font-semibold text-gray-900">{row.namaPadaBPKB || '-'}</p>
+                                </div>
+                              </div>
+                              
+                              <div className="pt-3 border-t-2 border-gray-100 grid grid-cols-2 gap-4">
                                 <div>
-                                  <span className="text-xs text-gray-500">Status</span>
-                                  <p className="text-xs sm:text-sm font-semibold text-gray-900 mt-0.5">{row.status}</p>
+                                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-2">Status</span>
+                                  <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                                    {row.status}
+                                  </span>
                                 </div>
                                 <div>
-                                  <span className="text-xs text-gray-500">Tanggal Status</span>
-                                  <p className="text-xs sm:text-sm font-medium text-gray-900 mt-0.5">{row.tanggalStatus}</p>
+                                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-2">Tanggal Status</span>
+                                  <p className="text-sm font-semibold text-gray-900">{row.tanggalStatus}</p>
                                 </div>
                               </div>
                             </div>
@@ -888,58 +921,72 @@ export default function OrderPage() {
                         </div>
                       </div>
 
-                      {/* Summary Table */}
-                      <div className="overflow-x-auto">
-                        <table className="w-full min-w-[400px]">
-                          <thead className="bg-yellow-400">
-                            <tr>
-                              <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-gray-900 border-r border-yellow-500">
-                                Status
-                              </th>
-                              <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-bold text-gray-900">
-                                Jumlah
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {summaryData.map((item, index) => (
-                              <tr 
-                                key={index} 
-                                className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-blue-50 transition-colors ${item.jumlah > 0 ? 'cursor-pointer' : ''}`}
+                      {/* Summary Cards Grid - Modern Layout */}
+                      <div className="p-4 sm:p-6">
+                        {/* Stats Grid */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                          {summaryData.map((item, index) => {
+                            const Icon = item.icon
+                            return (
+                              <div
+                                key={index}
                                 onClick={() => item.jumlah > 0 && handleStatusClick(item.status)}
+                                className={`relative group overflow-hidden rounded-xl border-2 transition-all duration-300 ${
+                                  item.jumlah > 0 
+                                    ? `${item.borderColor} hover:shadow-xl hover:scale-105 cursor-pointer` 
+                                    : 'border-gray-200 opacity-60'
+                                }`}
                               >
-                                <td className="px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3.5 border-r border-gray-200">
-                                  <button 
-                                    className={`text-left text-xs sm:text-sm w-full ${item.jumlah > 0 ? 'text-blue-600 hover:text-blue-800 hover:underline font-medium' : 'text-gray-700'}`}
-                                    disabled={item.jumlah === 0}
-                                  >
+                                {/* Background Gradient */}
+                                <div className={`absolute inset-0 bg-gradient-to-br ${item.lightBg} opacity-50 group-hover:opacity-70 transition-opacity`}></div>
+                                
+                                {/* Content */}
+                                <div className="relative p-4">
+                                  <div className="flex items-start justify-between mb-3">
+                                    <div className={`p-2.5 rounded-lg bg-gradient-to-br ${item.bgGradient} shadow-md`}>
+                                      <Icon className="h-5 w-5 text-white" />
+                                    </div>
+                                    <div className={`px-3 py-1 rounded-full text-xl font-bold ${
+                                      item.jumlah > 0 ? `${item.color} text-white shadow-md` : 'bg-gray-200 text-gray-500'
+                                    }`}>
+                                      {item.jumlah}
+                                    </div>
+                                  </div>
+                                  <h4 className={`text-sm font-semibold leading-tight min-h-[40px] ${item.textColor}`}>
                                     {item.status}
-                                  </button>
-                                </td>
-                                <td className="px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3.5 text-right">
-                                  <span className={`inline-flex items-center justify-center min-w-[1.5rem] sm:min-w-[2rem] px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-bold ${
-                                    item.jumlah > 0 
-                                      ? 'bg-blue-100 text-blue-800' 
-                                      : 'bg-gray-100 text-gray-500'
-                                  }`}>
-                                    {item.jumlah}
-                                  </span>
-                                </td>
-                              </tr>
-                            ))}
-                            {/* Total Row */}
-                            <tr className="bg-yellow-400 font-bold">
-                              <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900 border-r border-yellow-500">
-                                Total
-                              </td>
-                              <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-right">
-                                <span className="inline-flex items-center justify-center min-w-[1.5rem] sm:min-w-[2rem] px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-bold bg-yellow-500 text-gray-900">
+                                  </h4>
+                                  {item.jumlah > 0 && (
+                                    <div className="mt-2 flex items-center gap-1 text-xs font-medium text-gray-600 group-hover:text-gray-900">
+                                      <span>Lihat Detail</span>
+                                      <ChevronRight className="h-3 w-3" />
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+
+                        {/* Total Summary Card */}
+                        <div className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 rounded-xl p-6 shadow-lg">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                                <Package className="h-8 w-8 text-white" />
+                              </div>
+                              <div>
+                                <p className="text-white/90 text-sm font-medium mb-1">Total Semua Order</p>
+                                <p className="text-white text-3xl font-bold">
                                   {summaryData.reduce((sum, item) => sum + item.jumlah, 0)}
-                                </span>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-white/90 text-xs mb-1">Periode</p>
+                              <p className="text-white text-sm font-semibold">Nov 2024</p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Download Button at Bottom */}
@@ -1116,88 +1163,77 @@ export default function OrderPage() {
                             </div>
                           </div>
 
-                          {/* Row 2: Date Range Start */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Periode Dari</label>
-                            <div className="grid grid-cols-3 gap-3">
-                              <div>
-                                <select
-                                  value={dokumenDay}
-                                  onChange={(e) => setDokumenDay(e.target.value)}
-                                  className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
-                                >
-                                  {days.map((day) => (
-                                    <option key={day} value={day}>{day}</option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div>
-                                <select
-                                  value={dokumenMonth}
-                                  onChange={(e) => setDokumenMonth(e.target.value)}
-                                  className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
-                                >
-                                  {months.map((month) => (
-                                    <option key={month} value={month}>{month}</option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div>
-                                <select
-                                  value={dokumenYear}
-                                  onChange={(e) => setDokumenYear(e.target.value)}
-                                  className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
-                                >
-                                  {years.map((year) => (
-                                    <option key={year} value={year}>{year}</option>
-                                  ))}
-                                </select>
-                              </div>
+                          {/* Date Range Toggle for Dokumen */}
+                          <div className="mb-4">
+                            <div className="flex items-center gap-4">
+                              <label className="flex items-center gap-2 cursor-pointer group">
+                                <input
+                                  type="checkbox"
+                                  checked={isDokumenDateRange}
+                                  onChange={(e) => setIsDokumenDateRange(e.target.checked)}
+                                  className="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500 rounded cursor-pointer"
+                                />
+                                <span className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
+                                  Gunakan Range Tanggal
+                                </span>
+                              </label>
                             </div>
                           </div>
 
-                          {/* Separator */}
-                          <div className="flex items-center justify-center">
-                            <span className="text-gray-500 font-medium">-</span>
-                          </div>
+                          {/* Date Picker Section for Dokumen */}
+                          <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-4 border-2 border-blue-200">
+                            <div className="flex items-center gap-2 mb-3">
+                              <CalendarDays className="h-5 w-5 text-blue-600" />
+                              <h4 className="text-sm font-semibold text-gray-900">
+                                {isDokumenDateRange ? 'Pilih Range Tanggal' : 'Pilih Tanggal'}
+                              </h4>
+                            </div>
+                            
+                            <div className={`grid ${isDokumenDateRange ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'} gap-4`}>
+                              <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {isDokumenDateRange ? 'Tanggal Mulai' : 'Tanggal'}
+                                </label>
+                                <input
+                                  type="date"
+                                  value={dokumenStartDate}
+                                  onChange={(e) => setDokumenStartDate(e.target.value)}
+                                  className="w-full px-4 py-3 text-sm border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white font-medium shadow-sm hover:border-blue-400 transition-colors"
+                                />
+                              </div>
 
-                          {/* Row 3: Date Range End */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Periode Sampai</label>
-                            <div className="grid grid-cols-3 gap-3">
-                              <div>
-                                <select
-                                  value={dokumenEndDay}
-                                  onChange={(e) => setDokumenEndDay(e.target.value)}
-                                  className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
-                                >
-                                  {days.map((day) => (
-                                    <option key={day} value={day}>{day}</option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div>
-                                <select
-                                  value={dokumenEndMonth}
-                                  onChange={(e) => setDokumenEndMonth(e.target.value)}
-                                  className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
-                                >
-                                  {months.map((month) => (
-                                    <option key={month} value={month}>{month}</option>
-                                  ))}
-                                </select>
-                              </div>
-                              <div>
-                                <select
-                                  value={dokumenEndYear}
-                                  onChange={(e) => setDokumenEndYear(e.target.value)}
-                                  className="w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
-                                >
-                                  {years.map((year) => (
-                                    <option key={year} value={year}>{year}</option>
-                                  ))}
-                                </select>
-                              </div>
+                              {isDokumenDateRange && (
+                                <div>
+                                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                    Tanggal Akhir
+                                  </label>
+                                  <input
+                                    type="date"
+                                    value={dokumenEndDate}
+                                    onChange={(e) => setDokumenEndDate(e.target.value)}
+                                    min={dokumenStartDate}
+                                    className="w-full px-4 py-3 text-sm border-2 border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white font-medium shadow-sm hover:border-blue-400 transition-colors"
+                                  />
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Date Info Display */}
+                            <div className="mt-3 p-3 bg-white/70 rounded-lg border border-blue-200">
+                              <p className="text-xs text-gray-600">
+                                <span className="font-semibold text-blue-700">Periode yang dipilih:</span>
+                                {isDokumenDateRange ? (
+                                  <span className="ml-2 font-medium text-gray-900">
+                                    {new Date(dokumenStartDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })} 
+                                    {' - '} 
+                                    {new Date(dokumenEndDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                  </span>
+                                ) : (
+                                  <span className="ml-2 font-medium text-gray-900">
+                                    {new Date(dokumenStartDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })}
+                                  </span>
+                                )}
+                              </p>
                             </div>
                           </div>
 
@@ -1276,43 +1312,62 @@ export default function OrderPage() {
                     /* Detail Table View */
                     <div className="bg-white border-t border-gray-200">
                       {/* Header with back button */}
-                      <div className="p-3 sm:p-4 lg:p-5 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-3">
+                      <div className="p-4 sm:p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 via-white to-blue-50">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
                           <button
                             onClick={handleBackToDokumenSummary}
-                            className="flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors w-full sm:w-auto justify-center sm:justify-start"
+                            className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 bg-white border-2 border-gray-300 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all shadow-sm w-full sm:w-auto justify-center sm:justify-start"
                           >
-                            <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-                            <span className="hidden sm:inline">Kembali ke Summary</span>
-                            <span className="sm:hidden">Kembali</span>
+                            <ArrowLeft className="h-4 w-4" />
+                            <span>Kembali ke Summary</span>
                           </button>
                           <button
                             onClick={downloadExcel}
-                            className="flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors shadow-md w-full sm:w-auto justify-center"
+                            className="flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 rounded-lg transition-all shadow-md hover:shadow-lg w-full sm:w-auto justify-center"
                           >
-                            <Download className="h-3 w-3 sm:h-4 sm:w-4" />
-                            <span className="hidden sm:inline">Download List Order</span>
-                            <span className="sm:hidden">Download</span>
+                            <Download className="h-4 w-4" />
+                            <span>Download List Order</span>
                           </button>
                         </div>
-                        <div className="space-y-1">
-                          <h3 className="text-base sm:text-lg font-bold text-gray-900">Summary Order Dlc {dokumenDealerCode}</h3>
-                          <p className="text-xs sm:text-sm text-gray-600">Periode {dokumenDay}/{dokumenMonth}/{dokumenYear} s/d {dokumenEndDay}/{dokumenEndMonth}/{dokumenEndYear}</p>
-                          <p className="text-xs sm:text-sm text-gray-600">Total: 1</p>
+                        <div className="flex items-start gap-3">
+                          <div className="p-3 bg-blue-100 rounded-lg">
+                            <FileText className="h-6 w-6 text-blue-600" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-bold text-gray-900 mb-1">Detail Order - {selectedDokumenStatus}</h3>
+                            <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-4 w-4" />
+                                Periode: {new Date(dokumenStartDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                {isDokumenDateRange && ` - ${new Date(dokumenEndDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}`}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Package className="h-4 w-4" />
+                                Total: 0 order
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
                       {/* Table Controls */}
-                      <div className="p-3 sm:p-4 bg-gray-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                        <button className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-white bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
-                          <span>Show</span>
-                          <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4" />
-                        </button>
-                        <div className="flex items-center gap-2">
-                          <span className="text-white text-xs sm:text-sm whitespace-nowrap">Search:</span>
+                      <div className="p-4 bg-gradient-to-r from-gray-700 to-gray-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <label className="text-white text-sm font-medium">Show:</label>
+                          <select className="px-3 py-2 text-sm bg-gray-600 text-white border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option>10</option>
+                            <option>25</option>
+                            <option>50</option>
+                            <option>100</option>
+                          </select>
+                          <span className="text-white text-sm">entries</span>
+                        </div>
+                        <div className="flex items-center gap-2 flex-1 sm:flex-initial">
+                          <label className="text-white text-sm font-medium whitespace-nowrap">Search:</label>
                           <input
                             type="text"
-                            className="flex-1 sm:flex-initial px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm border border-gray-600 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Cari..."
+                            className="flex-1 sm:w-64 px-3 py-2 text-sm border border-gray-500 rounded-lg bg-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                         </div>
                       </div>
@@ -1320,43 +1375,47 @@ export default function OrderPage() {
                       {/* Detail Table - Desktop */}
                       <div className="hidden lg:block overflow-x-auto">
                         <table className="w-full">
-                          <thead className="bg-yellow-400 text-gray-900">
+                          <thead className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
                             <tr>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">No.</th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-blue-400">
                                 <div className="flex items-center gap-1">
+                                  No.
+                                </div>
+                              </th>
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-blue-400">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-blue-100">
                                   Tanggal Order
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
                               </th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">
-                                <div className="flex items-center gap-1">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-blue-400">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-blue-100">
                                   No. Aplikasi
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
                               </th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">
-                                <div className="flex items-center gap-1">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-blue-400">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-blue-100">
                                   Tanggal Aplikasi
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
                               </th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">Cabang</th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">
-                                <div className="flex items-center gap-1">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-blue-400">Cabang</th>
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-blue-400">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-blue-100">
                                   Nama Pemohon
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
                               </th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">
-                                <div className="flex items-center gap-1">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-blue-400">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-blue-100">
                                   Nama Pada BPKB
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
                               </th>
-                              <th className="px-4 py-3 text-left text-sm font-bold border-r border-yellow-500">Status</th>
-                              <th className="px-4 py-3 text-left text-sm font-bold">
-                                <div className="flex items-center gap-1">
+                              <th className="px-4 py-4 text-left text-sm font-bold border-r border-blue-400">Status</th>
+                              <th className="px-4 py-4 text-left text-sm font-bold">
+                                <div className="flex items-center gap-1 cursor-pointer hover:text-blue-100">
                                   Tanggal Status
                                   <ChevronDown className="h-4 w-4" />
                                 </div>
@@ -1364,9 +1423,15 @@ export default function OrderPage() {
                             </tr>
                           </thead>
                           <tbody>
-                            <tr className="bg-white">
-                              <td colSpan={9} className="px-4 py-8 text-center text-sm text-gray-500">
-                                No data available
+                            <tr className="bg-blue-50/30 hover:bg-blue-100/50">
+                              <td colSpan={9} className="px-4 py-12 text-center">
+                                <div className="flex flex-col items-center justify-center">
+                                  <div className="p-4 bg-blue-100 rounded-full mb-3">
+                                    <FileText className="h-8 w-8 text-blue-400" />
+                                  </div>
+                                  <p className="text-sm font-semibold text-gray-700 mb-1">Tidak ada data</p>
+                                  <p className="text-xs text-gray-500">Belum ada dokumen susulan untuk periode ini</p>
+                                </div>
                               </td>
                             </tr>
                           </tbody>
@@ -1374,9 +1439,15 @@ export default function OrderPage() {
                       </div>
 
                       {/* Detail Table - Mobile/Tablet Card View */}
-                      <div className="lg:hidden p-3 sm:p-4">
-                        <div className="bg-white border border-gray-200 rounded-lg p-4 text-center">
-                          <p className="text-sm text-gray-500">No data available</p>
+                      <div className="lg:hidden p-4">
+                        <div className="bg-gradient-to-br from-blue-50 to-white border-2 border-blue-200 rounded-xl p-6 text-center shadow-md">
+                          <div className="flex flex-col items-center justify-center">
+                            <div className="p-4 bg-blue-100 rounded-full mb-3">
+                              <FileText className="h-8 w-8 text-blue-400" />
+                            </div>
+                            <p className="text-sm font-semibold text-gray-700 mb-1">Tidak ada data</p>
+                            <p className="text-xs text-gray-500">Belum ada dokumen susulan untuk periode ini</p>
+                          </div>
                         </div>
                       </div>
 
@@ -1439,7 +1510,10 @@ export default function OrderPage() {
                               </h3>
                               <p className="text-xs sm:text-sm text-gray-600 flex items-center gap-1 sm:gap-2 mt-1">
                                 <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                                <span className="break-words">Periode {dokumenDay}/{dokumenMonth}/{dokumenYear} s/d {dokumenEndDay}/{dokumenEndMonth}/{dokumenEndYear}</span>
+                                <span className="break-words">
+                                  Periode: {new Date(dokumenStartDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                  {isDokumenDateRange && ` s/d ${new Date(dokumenEndDate).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}`}
+                                </span>
                               </p>
                             </div>
                           </div>
@@ -1454,58 +1528,74 @@ export default function OrderPage() {
                         </div>
                       </div>
 
-                      {/* Summary Table */}
-                      <div className="overflow-x-auto">
-                        <table className="w-full min-w-[400px]">
-                          <thead className="bg-yellow-400">
-                            <tr>
-                              <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-left text-xs sm:text-sm font-bold text-gray-900 border-r border-yellow-500">
-                                Status
-                              </th>
-                              <th className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-right text-xs sm:text-sm font-bold text-gray-900">
-                                Jumlah
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {dokumenSummaryData.map((item, index) => (
-                              <tr 
-                                key={index} 
-                                className={`${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} ${item.jumlah > 0 ? 'hover:bg-blue-50 transition-colors cursor-pointer' : ''}`}
+                      {/* Summary Cards Grid - Modern Layout */}
+                      <div className="p-4 sm:p-6">
+                        {/* Stats Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                          {dokumenSummaryData.map((item, index) => {
+                            const Icon = item.icon
+                            return (
+                              <div
+                                key={index}
                                 onClick={() => item.jumlah > 0 && handleDokumenStatusClick(item.status)}
+                                className={`relative group overflow-hidden rounded-xl border-2 transition-all duration-300 ${
+                                  item.jumlah > 0 
+                                    ? `${item.borderColor} hover:shadow-xl hover:scale-105 cursor-pointer` 
+                                    : 'border-gray-200 opacity-60'
+                                }`}
                               >
-                                <td className="px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3.5 border-r border-gray-200">
-                                  <button 
-                                    className={`text-left text-xs sm:text-sm w-full ${item.jumlah > 0 ? 'text-blue-600 hover:text-blue-800 hover:underline font-medium' : 'text-gray-700'}`}
-                                    disabled={item.jumlah === 0}
-                                  >
+                                {/* Background Gradient */}
+                                <div className={`absolute inset-0 bg-gradient-to-br ${item.lightBg} opacity-50 group-hover:opacity-70 transition-opacity`}></div>
+                                
+                                {/* Content */}
+                                <div className="relative p-6">
+                                  <div className="flex items-start justify-between mb-4">
+                                    <div className={`p-3 rounded-lg bg-gradient-to-br ${item.bgGradient} shadow-md`}>
+                                      <Icon className="h-6 w-6 text-white" />
+                                    </div>
+                                    <div className={`px-4 py-2 rounded-full text-2xl font-bold ${
+                                      item.jumlah > 0 ? `${item.color} text-white shadow-md` : 'bg-gray-200 text-gray-500'
+                                    }`}>
+                                      {item.jumlah}
+                                    </div>
+                                  </div>
+                                  <h4 className={`text-base font-semibold leading-tight ${item.textColor}`}>
                                     {item.status}
-                                  </button>
-                                </td>
-                                <td className="px-3 sm:px-4 lg:px-6 py-2.5 sm:py-3.5 text-right">
-                                  <span className={`inline-flex items-center justify-center min-w-[1.5rem] sm:min-w-[2rem] px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-bold ${
-                                    item.jumlah > 0 
-                                      ? 'bg-blue-100 text-blue-800' 
-                                      : 'bg-gray-100 text-gray-500'
-                                  }`}>
-                                    {item.jumlah}
-                                  </span>
-                                </td>
-                              </tr>
-                            ))}
-                            {/* Total Row */}
-                            <tr className="bg-yellow-400 font-bold">
-                              <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900 border-r border-yellow-500">
-                                Total
-                              </td>
-                              <td className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4 text-right">
-                                <span className="inline-flex items-center justify-center min-w-[1.5rem] sm:min-w-[2rem] px-2 sm:px-3 py-0.5 sm:py-1 rounded-full text-xs sm:text-sm font-bold bg-yellow-500 text-gray-900">
+                                  </h4>
+                                  {item.jumlah > 0 && (
+                                    <div className="mt-3 flex items-center gap-1 text-sm font-medium text-gray-600 group-hover:text-gray-900">
+                                      <span>Lihat Detail</span>
+                                      <ChevronRight className="h-4 w-4" />
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
+
+                        {/* Total Summary Card */}
+                        <div className="bg-gradient-to-r from-blue-400 via-blue-500 to-blue-400 rounded-xl p-6 shadow-lg">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                              <div className="p-3 bg-white/20 backdrop-blur-sm rounded-xl">
+                                <FileText className="h-8 w-8 text-white" />
+                              </div>
+                              <div>
+                                <p className="text-white/90 text-sm font-medium mb-1">Total Dokumen Susulan</p>
+                                <p className="text-white text-3xl font-bold">
                                   {dokumenSummaryData.reduce((sum, item) => sum + item.jumlah, 0)}
-                                </span>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-white/90 text-xs mb-1">Periode</p>
+                              <p className="text-white text-sm font-semibold">
+                                {new Date(dokumenStartDate).toLocaleDateString('id-ID', { month: 'short', year: 'numeric' })}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Download Button at Bottom */}
